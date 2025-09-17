@@ -9,11 +9,19 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 const db = admin.firestore();
 
+// Configuración CORS
+const corsOptions = {
+  origin: ["https://tournament-app-rouge.vercel.app"], // tu dominio de Vercel
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
 // ============================
 // Configuración Express
 // ============================
 const app = express();
-app.use(cors({ origin: true }));
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // ============================
