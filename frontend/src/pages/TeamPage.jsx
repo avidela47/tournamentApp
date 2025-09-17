@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// 👇 Usamos variable de entorno y fallback a Firebase
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://us-central1-tournaments-app-e627f.cloudfunctions.net/api";
 
 const TeamPage = () => {
   const [teams, setTeams] = useState([]);
@@ -179,3 +182,4 @@ const TeamPage = () => {
 };
 
 export default TeamPage;
+

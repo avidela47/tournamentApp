@@ -2,17 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
-
-  // 🌍 API Render o Local (por ahora no se usa aquí)
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-  
   const menuItems = [
     { path: "/teams", label: "Equipos", icon: "⚽", color: "bg-green-100" },
     { path: "/players", label: "Jugadores", icon: "👟", color: "bg-yellow-100" },
     { path: "/matches", label: "Partidos", icon: "🥅", color: "bg-blue-100" },
     { path: "/tournaments", label: "Torneos", icon: "🏆", color: "bg-purple-100" },
     { path: "/standings", label: "Posiciones", icon: "📊", color: "bg-orange-100" },
-    { path: "/", label: "Estadísticas", icon: "📈", color: "bg-pink-100" },
+    { path: "/stats", label: "Estadísticas", icon: "📈", color: "bg-pink-100" },
   ];
 
   return (

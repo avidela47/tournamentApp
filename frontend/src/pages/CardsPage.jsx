@@ -3,13 +3,13 @@ import axios from "axios";
 import Card from "../components/Card";
 import CardsTable from "../components/CardsTable";
 
+// 🌍 API Firebase (usamos variable de entorno en Vercel)
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 const CardsPage = () => {
   const [tournaments, setTournaments] = useState([]);
   const [selectedTournament, setSelectedTournament] = useState("");
   const [cards, setCards] = useState({ yellow: [], red: [] });
-
-  // 🌍 API Render o Local
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
   useEffect(() => {
     fetchTournaments();

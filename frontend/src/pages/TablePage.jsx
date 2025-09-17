@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-// 🌍 API Render o Local
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// 🌍 API Firebase Functions o Local
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://us-central1-tournaments-app-e627f.cloudfunctions.net/api";
 
 const TablePage = () => {
   const [tournaments, setTournaments] = useState([]);
@@ -123,3 +125,4 @@ const TablePage = () => {
 };
 
 export default TablePage;
+

@@ -16,8 +16,10 @@ const MatchPage = () => {
   });
   const [editingId, setEditingId] = useState(null);
 
-  // 🌍 API para Render o Local
-  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  // 🌍 API Firebase Functions o Local
+  const API_URL =
+    import.meta.env.VITE_API_URL ||
+    "https://us-central1-tournaments-app-e627f.cloudfunctions.net/api";
 
   const fetchJSON = async (url, options = {}) => {
     const res = await fetch(url, options);
@@ -308,6 +310,7 @@ const MatchPage = () => {
 };
 
 export default MatchPage;
+
 
 
 

@@ -6,9 +6,10 @@ const StandingsPage = () => {
   const [players, setPlayers] = useState([]);
   const [selectedTournament, setSelectedTournament] = useState("");
 
-  // 🌍 Detectar API (Render o Local)
+  // 🌍 API Firebase Functions o Local
   const API_URL =
-    import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+    import.meta.env.VITE_API_URL ||
+    "https://us-central1-tournaments-app-e627f.cloudfunctions.net/api";
 
   const fetchJSON = async (url) => {
     const res = await fetch(url);
@@ -30,7 +31,9 @@ const StandingsPage = () => {
   };
 
   const loadPlayers = async (tournamentId) => {
-    const data = await fetchJSON(`${API_URL}/players/tournament/${tournamentId}`);
+    const data = await fetchJSON(
+      `${API_URL}/players/tournament/${tournamentId}`
+    );
     setPlayers(data);
   };
 
@@ -246,3 +249,4 @@ const StandingsPage = () => {
 };
 
 export default StandingsPage;
+

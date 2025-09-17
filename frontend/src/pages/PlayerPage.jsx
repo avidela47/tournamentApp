@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+// 🌍 API Firebase Functions o Local
+const API_URL =
+  import.meta.env.VITE_API_URL ||
+  "https://us-central1-tournaments-app-e627f.cloudfunctions.net/api";
 
 const PlayerPage = () => {
   const [players, setPlayers] = useState([]);
@@ -182,7 +185,7 @@ const PlayerPage = () => {
           </select>
           <button
             type="submit"
-            className="col-span-1 md:col-span-2 lg:col-span-3 bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+            className="col-span-1 md:col-span-2 lg:grid-cols-3 bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
           >
             {editingId ? "Actualizar" : "Guardar"}
           </button>
