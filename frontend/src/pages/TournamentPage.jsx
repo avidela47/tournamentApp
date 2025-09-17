@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 // 👇 Usamos variable de entorno para que en producción apunte a Firebase
 const API_URL =
   import.meta.env.VITE_API_URL ||
-  "https://us-central1-tournaments-app-e627f.cloudfunctions.net/api";
+  "https://us-central1-tournaments-app-e627f.cloudfunctions.net/";
 
 const TournamentPage = () => {
   const [tournaments, setTournaments] = useState([]);

@@ -13,17 +13,7 @@ const db = admin.firestore();
 // Configuración Express + CORS
 // ============================
 const app = express();
-
-// ✅ Habilitamos CORS solo para tu front en Vercel y localhost
-app.use(cors({
-  origin: [
-    "https://tournament-app-rouge.vercel.app",
-    "http://localhost:5173"
-  ],
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
-
+app.use(cors({ origin: true }));
 app.use(express.json());
 
 // ============================
@@ -236,4 +226,3 @@ app.get("/stats/cards/:tournamentId", async (req, res) => {
 // EXPORT FUNCTIONS
 // ============================
 exports.api = functions.https.onRequest(app);
-
