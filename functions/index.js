@@ -3,21 +3,25 @@ const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
 
-admin.initializeApp();
+// ============================
+// Inicializar Firebase Admin
+// ============================
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
 const db = admin.firestore();
 
+// ============================
+// Configuración Express + CORS
+// ============================
 const app = express();
-
-// ============================
-// CORS
-// ============================
 app.use(cors({ origin: true }));
 app.use(express.json());
 
 // ============================
 // TOURNAMENTS
 // ============================
-app.get("/api/tournaments", async (req, res) => {
+app.get("/tournaments", async (req, res) => {
   try {
     const snapshot = await db.collection("tournaments").get();
     const tournaments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -27,7 +31,7 @@ app.get("/api/tournaments", async (req, res) => {
   }
 });
 
-app.post("/api/tournaments", async (req, res) => {
+app.post("/tournaments", async (req, res) => {
   try {
     const ref = await db.collection("tournaments").add(req.body);
     res.json({ id: ref.id, ...req.body });
@@ -36,7 +40,7 @@ app.post("/api/tournaments", async (req, res) => {
   }
 });
 
-app.put("/api/tournaments/:id", async (req, res) => {
+app.put("/tournaments/:id", async (req, res) => {
   try {
     await db.collection("tournaments").doc(req.params.id).set(req.body, { merge: true });
     res.json({ id: req.params.id, ...req.body });
@@ -45,7 +49,7 @@ app.put("/api/tournaments/:id", async (req, res) => {
   }
 });
 
-app.delete("/api/tournaments/:id", async (req, res) => {
+app.delete("/tournaments/:id", async (req, res) => {
   try {
     await db.collection("tournaments").doc(req.params.id).delete();
     res.json({ message: "Torneo eliminado" });
@@ -57,7 +61,7 @@ app.delete("/api/tournaments/:id", async (req, res) => {
 // ============================
 // TEAMS
 // ============================
-app.get("/api/teams", async (req, res) => {
+app.get("/teams", async (req, res) => {
   try {
     const snapshot = await db.collection("teams").get();
     const teams = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -67,7 +71,7 @@ app.get("/api/teams", async (req, res) => {
   }
 });
 
-app.post("/api/teams", async (req, res) => {
+app.post("/teams", async (req, res) => {
   try {
     const ref = await db.collection("teams").add(req.body);
     res.json({ id: ref.id, ...req.body });
@@ -76,7 +80,7 @@ app.post("/api/teams", async (req, res) => {
   }
 });
 
-app.put("/api/teams/:id", async (req, res) => {
+app.put("/teams/:id", async (req, res) => {
   try {
     await db.collection("teams").doc(req.params.id).set(req.body, { merge: true });
     res.json({ id: req.params.id, ...req.body });
@@ -85,7 +89,7 @@ app.put("/api/teams/:id", async (req, res) => {
   }
 });
 
-app.delete("/api/teams/:id", async (req, res) => {
+app.delete("/teams/:id", async (req, res) => {
   try {
     await db.collection("teams").doc(req.params.id).delete();
     res.json({ message: "Equipo eliminado" });
@@ -97,7 +101,7 @@ app.delete("/api/teams/:id", async (req, res) => {
 // ============================
 // PLAYERS
 // ============================
-app.get("/api/players", async (req, res) => {
+app.get("/players", async (req, res) => {
   try {
     const snapshot = await db.collection("players").get();
     const players = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -107,7 +111,7 @@ app.get("/api/players", async (req, res) => {
   }
 });
 
-app.post("/api/players", async (req, res) => {
+app.post("/players", async (req, res) => {
   try {
     const ref = await db.collection("players").add(req.body);
     res.json({ id: ref.id, ...req.body });
@@ -116,7 +120,7 @@ app.post("/api/players", async (req, res) => {
   }
 });
 
-app.put("/api/players/:id", async (req, res) => {
+app.put("/players/:id", async (req, res) => {
   try {
     await db.collection("players").doc(req.params.id).set(req.body, { merge: true });
     res.json({ id: req.params.id, ...req.body });
@@ -125,7 +129,7 @@ app.put("/api/players/:id", async (req, res) => {
   }
 });
 
-app.delete("/api/players/:id", async (req, res) => {
+app.delete("/players/:id", async (req, res) => {
   try {
     await db.collection("players").doc(req.params.id).delete();
     res.json({ message: "Jugador eliminado" });
@@ -135,7 +139,7 @@ app.delete("/api/players/:id", async (req, res) => {
 });
 
 // PATCH stats jugador
-app.patch("/api/players/:id/stats", async (req, res) => {
+app.patch("/players/:id/stats", async (req, res) => {
   try {
     await db.collection("players").doc(req.params.id).set(req.body, { merge: true });
     res.json({ id: req.params.id, ...req.body });
@@ -147,7 +151,7 @@ app.patch("/api/players/:id/stats", async (req, res) => {
 // ============================
 // MATCHES
 // ============================
-app.get("/api/matches", async (req, res) => {
+app.get("/matches", async (req, res) => {
   try {
     const snapshot = await db.collection("matches").get();
     const matches = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -157,7 +161,7 @@ app.get("/api/matches", async (req, res) => {
   }
 });
 
-app.post("/api/matches", async (req, res) => {
+app.post("/matches", async (req, res) => {
   try {
     const ref = await db.collection("matches").add(req.body);
     res.json({ id: ref.id, ...req.body });
@@ -166,7 +170,7 @@ app.post("/api/matches", async (req, res) => {
   }
 });
 
-app.put("/api/matches/:id", async (req, res) => {
+app.put("/matches/:id", async (req, res) => {
   try {
     await db.collection("matches").doc(req.params.id).set(req.body, { merge: true });
     res.json({ id: req.params.id, ...req.body });
@@ -175,7 +179,7 @@ app.put("/api/matches/:id", async (req, res) => {
   }
 });
 
-app.delete("/api/matches/:id", async (req, res) => {
+app.delete("/matches/:id", async (req, res) => {
   try {
     await db.collection("matches").doc(req.params.id).delete();
     res.json({ message: "Partido eliminado" });
@@ -187,7 +191,7 @@ app.delete("/api/matches/:id", async (req, res) => {
 // ============================
 // STANDINGS
 // ============================
-app.get("/api/standings/:tournamentId", async (req, res) => {
+app.get("/standings/:tournamentId", async (req, res) => {
   try {
     const snapshot = await db
       .collection("standings")
@@ -203,7 +207,7 @@ app.get("/api/standings/:tournamentId", async (req, res) => {
 // ============================
 // CARDS (amarillas y rojas)
 // ============================
-app.get("/api/stats/cards/:tournamentId", async (req, res) => {
+app.get("/stats/cards/:tournamentId", async (req, res) => {
   try {
     const snapshot = await db
       .collection("players")
@@ -221,6 +225,7 @@ app.get("/api/stats/cards/:tournamentId", async (req, res) => {
 });
 
 // ============================
-// EXPORT FUNCTION
+// EXPORT FUNCTIONS
 // ============================
 exports.api = functions.https.onRequest(app);
+
