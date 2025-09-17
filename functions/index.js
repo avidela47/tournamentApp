@@ -19,8 +19,6 @@ app.use(express.json());
 // ============================
 // TOURNAMENTS
 // ============================
-
-// GET all tournaments
 app.get("/tournaments", async (req, res) => {
   try {
     const snapshot = await db.collection("tournaments").get();
@@ -31,7 +29,6 @@ app.get("/tournaments", async (req, res) => {
   }
 });
 
-// POST tournament
 app.post("/tournaments", async (req, res) => {
   try {
     const ref = await db.collection("tournaments").add(req.body);
@@ -41,7 +38,6 @@ app.post("/tournaments", async (req, res) => {
   }
 });
 
-// PUT tournament
 app.put("/tournaments/:id", async (req, res) => {
   try {
     await db.collection("tournaments").doc(req.params.id).set(req.body, { merge: true });
@@ -51,7 +47,6 @@ app.put("/tournaments/:id", async (req, res) => {
   }
 });
 
-// DELETE tournament
 app.delete("/tournaments/:id", async (req, res) => {
   try {
     await db.collection("tournaments").doc(req.params.id).delete();
@@ -64,7 +59,6 @@ app.delete("/tournaments/:id", async (req, res) => {
 // ============================
 // TEAMS
 // ============================
-
 app.get("/teams", async (req, res) => {
   try {
     const snapshot = await db.collection("teams").get();
@@ -105,7 +99,6 @@ app.delete("/teams/:id", async (req, res) => {
 // ============================
 // PLAYERS
 // ============================
-
 app.get("/players", async (req, res) => {
   try {
     const snapshot = await db.collection("players").get();
@@ -143,7 +136,7 @@ app.delete("/players/:id", async (req, res) => {
   }
 });
 
-// PATCH stats
+// PATCH stats jugador
 app.patch("/players/:id/stats", async (req, res) => {
   try {
     await db.collection("players").doc(req.params.id).set(req.body, { merge: true });
@@ -156,7 +149,6 @@ app.patch("/players/:id/stats", async (req, res) => {
 // ============================
 // MATCHES
 // ============================
-
 app.get("/matches", async (req, res) => {
   try {
     const snapshot = await db.collection("matches").get();
@@ -195,13 +187,14 @@ app.delete("/matches/:id", async (req, res) => {
 });
 
 // ============================
-// STANDINGS (ejemplo simple)
+// STANDINGS
 // ============================
-
 app.get("/standings/:tournamentId", async (req, res) => {
   try {
-    const snapshot = await db.collection("standings")
-      .where("tournamentId", "==", req.params.tournamentId).get();
+    const snapshot = await db
+      .collection("standings")
+      .where("tournamentId", "==", req.params.tournamentId)
+      .get();
     const standings = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.json(standings);
   } catch (err) {
@@ -212,11 +205,12 @@ app.get("/standings/:tournamentId", async (req, res) => {
 // ============================
 // CARDS (amarillas y rojas)
 // ============================
-
 app.get("/stats/cards/:tournamentId", async (req, res) => {
   try {
-    const snapshot = await db.collection("players")
-      .where("tournamentId", "==", req.params.tournamentId).get();
+    const snapshot = await db
+      .collection("players")
+      .where("tournamentId", "==", req.params.tournamentId)
+      .get();
 
     const players = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     const yellow = players.filter((p) => p.yellowCards && p.yellowCards > 0);
