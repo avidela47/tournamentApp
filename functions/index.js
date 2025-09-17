@@ -9,19 +9,19 @@ const admin = require("firebase-admin");
 admin.initializeApp();
 const db = admin.firestore();
 
-// Configuración CORS
-const corsOptions = {
-  origin: ["https://tournament-app-rouge.vercel.app"], // tu dominio de Vercel
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true,
-};
-
 // ============================
-// Configuración Express
+// Configuración Express + CORS
 // ============================
 const app = express();
+
+const corsOptions = {
+  origin: ["https://tournament-app-rouge.vercel.app"], // tu frontend en Vercel
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // manejar preflight requests
 app.use(express.json());
 
 // ============================
@@ -30,7 +30,10 @@ app.use(express.json());
 app.get("/tournaments", async (req, res) => {
   try {
     const snapshot = await db.collection("tournaments").get();
-    const tournaments = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const tournaments = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     res.json(tournaments);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -70,7 +73,10 @@ app.delete("/tournaments/:id", async (req, res) => {
 app.get("/teams", async (req, res) => {
   try {
     const snapshot = await db.collection("teams").get();
-    const teams = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const teams = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     res.json(teams);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -110,7 +116,10 @@ app.delete("/teams/:id", async (req, res) => {
 app.get("/players", async (req, res) => {
   try {
     const snapshot = await db.collection("players").get();
-    const players = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const players = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     res.json(players);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -144,7 +153,7 @@ app.delete("/players/:id", async (req, res) => {
   }
 });
 
-// PATCH stats jugador
+// PATCH stats
 app.patch("/players/:id/stats", async (req, res) => {
   try {
     await db.collection("players").doc(req.params.id).set(req.body, { merge: true });
@@ -160,7 +169,10 @@ app.patch("/players/:id/stats", async (req, res) => {
 app.get("/matches", async (req, res) => {
   try {
     const snapshot = await db.collection("matches").get();
-    const matches = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const matches = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     res.json(matches);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -203,7 +215,10 @@ app.get("/standings/:tournamentId", async (req, res) => {
       .collection("standings")
       .where("tournamentId", "==", req.params.tournamentId)
       .get();
-    const standings = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const standings = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
     res.json(standings);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -211,7 +226,7 @@ app.get("/standings/:tournamentId", async (req, res) => {
 });
 
 // ============================
-// CARDS (amarillas y rojas)
+// CARDS
 // ============================
 app.get("/stats/cards/:tournamentId", async (req, res) => {
   try {
@@ -233,4 +248,7 @@ app.get("/stats/cards/:tournamentId", async (req, res) => {
 // ============================
 // EXPORT FUNCTIONS
 // ============================
-exports.api = functions.https.onRequest(app);
+exports.api = functions
+  .region("us-central1")
+  .https.onRequest(app);
+
