@@ -18,13 +18,28 @@ const app = express();
 app.use(cors({ origin: true }));
 app.use(express.json());
 
+// Prefijo /api normalizado
+app.use((req, _res, next) => {
+  if (req.path.startsWith("/api/")) {
+    req.url = req.url.replace(/^\/api/, "");
+  }
+  next();
+});
+
+// ============================
+// RUTA DE PRUEBA
+// ============================
+app.get("/", (_req, res) => {
+  res.json({ ok: true, message: "API lista 🚀" });
+});
+
 // ============================
 // TOURNAMENTS
 // ============================
-app.get("/tournaments", async (req, res) => {
+app.get("/tournaments", async (_req, res) => {
   try {
     const snapshot = await db.collection("tournaments").get();
-    const tournaments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const tournaments = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.json(tournaments);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -61,10 +76,10 @@ app.delete("/tournaments/:id", async (req, res) => {
 // ============================
 // TEAMS
 // ============================
-app.get("/teams", async (req, res) => {
+app.get("/teams", async (_req, res) => {
   try {
     const snapshot = await db.collection("teams").get();
-    const teams = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const teams = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.json(teams);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -101,10 +116,10 @@ app.delete("/teams/:id", async (req, res) => {
 // ============================
 // PLAYERS
 // ============================
-app.get("/players", async (req, res) => {
+app.get("/players", async (_req, res) => {
   try {
     const snapshot = await db.collection("players").get();
-    const players = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const players = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.json(players);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -138,7 +153,7 @@ app.delete("/players/:id", async (req, res) => {
   }
 });
 
-// PATCH stats jugador
+// PATCH stats
 app.patch("/players/:id/stats", async (req, res) => {
   try {
     await db.collection("players").doc(req.params.id).set(req.body, { merge: true });
@@ -151,10 +166,10 @@ app.patch("/players/:id/stats", async (req, res) => {
 // ============================
 // MATCHES
 // ============================
-app.get("/matches", async (req, res) => {
+app.get("/matches", async (_req, res) => {
   try {
     const snapshot = await db.collection("matches").get();
-    const matches = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const matches = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.json(matches);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -197,7 +212,7 @@ app.get("/standings/:tournamentId", async (req, res) => {
       .collection("standings")
       .where("tournamentId", "==", req.params.tournamentId)
       .get();
-    const standings = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const standings = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
     res.json(standings);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -205,7 +220,7 @@ app.get("/standings/:tournamentId", async (req, res) => {
 });
 
 // ============================
-// CARDS (amarillas y rojas)
+// CARDS
 // ============================
 app.get("/stats/cards/:tournamentId", async (req, res) => {
   try {
@@ -214,9 +229,9 @@ app.get("/stats/cards/:tournamentId", async (req, res) => {
       .where("tournamentId", "==", req.params.tournamentId)
       .get();
 
-    const players = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    const yellow = players.filter(p => p.yellowCards && p.yellowCards > 0);
-    const red = players.filter(p => p.redCards && p.redCards > 0);
+    const players = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    const yellow = players.filter((p) => p.yellowCards && p.yellowCards > 0);
+    const red = players.filter((p) => p.redCards && p.redCards > 0);
 
     res.json({ yellow, red });
   } catch (err) {
@@ -225,7 +240,8 @@ app.get("/stats/cards/:tournamentId", async (req, res) => {
 });
 
 // ============================
-// EXPORT FUNCTIONS
+// EXPORTAR FUNCTION
 // ============================
-exports.api = functions.https.onRequest(app);
+exports.api = functions.region("us-central1").https.onRequest(app);
+
 
